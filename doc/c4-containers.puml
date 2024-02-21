@@ -1,0 +1,45 @@
+@startuml social_network_containers
+
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0
+!includeurl ICONURL/devicons/python.puml
+!includeurl ICONURL/devicons/postgresql.puml
+!include <cloudinsight/kafka>
+
+skinparam wrapWidth 300
+LAYOUT_WITH_LEGEND()
+
+title  Архитектура социальной сети
+
+'Пользователь
+Person(user, "Пользователь", "Пользователь социальной сети")
+
+'Контейнеры
+Container(frontend, "Фронтэнд", "", "Графическое представление социальной сети для пользователя")
+Container(gateway, "API социальной сети", "python", "Занимается обработкой запросов, регистрацию и аутентификацию пользователей", $sprite="python")
+Container(statistics, "Сервис статистики", "python", "Занимается хранением статистики лайков и просмотров на постах", $sprite="python")
+Container(content, "Сервис постов и комментариев", "python", "Занимается доступом к постам и комментариям", $sprite="python")
+
+ContainerDb(client_db, "User Database", "postgres", "Хранит данные пользователей", $sprite="postgresql")
+ContainerDb(content_db, "Post / Comments Database", "postgres", "Хранит посты и комментарии к постам", $sprite="postgresql")
+ContainerDb(statistics_db, "Statistics Database", "clickhouse", "Хранит статистику просмотров и лайков")
+
+ContainerQueue(statistics_queue, "Брокер сообщений", "Kafka", "Очередь сообщений в сервис статистики",  $sprite="kafka")
+
+
+'Связи
+Rel(user, frontend, "Публикует/изменяет/удаляет посты, просматривает и реагирует на чужие посты", "")
+Rel(frontend, gateway, "Отправляет на обработку действия пользователя", "REST")
+Rel(gateway, content, "Сохраняет/изменяет/удаляет посты, сохраняет комментарии", "gRPC")
+Rel(gateway, statistics, "Забирает статистику по лайкам и просмотрам", "gRPC")
+Rel(gateway, statistics_queue, "Отправляет действие по статистике в очередь", "AMQP")
+Rel(statistics, statistics_queue, "Забирает статистику", "AMQP")
+
+Rel(statistics, statistics_db, "", "")
+Rel(content, content_db, "", "")
+Rel_L(gateway, client_db, "", "")
+
+
+
+
+@enduml

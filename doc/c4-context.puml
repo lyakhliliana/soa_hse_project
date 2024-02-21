@@ -1,0 +1,17 @@
+@startuml social_network_context
+
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+skinparam wrapWidth 300
+LAYOUT_WITH_LEGEND()
+
+'Пользователь
+Person(user, "Пользователь", "Пользователь социальной сети")
+
+'Система
+System(social_network, "Социальная сеть", "Социальная сеть с постами, лайками и комментами к ним")
+
+'Связи
+Rel(user, social_network, "Публикует/изменяет/удаляет посты, просматривает и реагирует на чужие посты")
+
+@enduml
