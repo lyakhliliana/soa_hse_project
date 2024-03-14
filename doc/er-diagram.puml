@@ -4,11 +4,18 @@
 !define foreign_key(x) <color:green>x</color>
 
 Table(user, "User") {
-    +primary_key(id) : int
-    +username : varchar
+    +primary_key(login) : varchar
     +password : varchar
-    +age : int
-    +email : varchar
+    +name : varchar
+    +surname : varchar
+    +birthdate : date
+    +mail : varchar
+    +mobile_phone_no : varchar
+}
+
+Table(session, "Session") {
+    +primary_key(login) : varchar
+    +key : uuid
 }
 
 Table(post, "Post") {
@@ -50,6 +57,7 @@ user ||--|{ post
 user ||--|{ comment
 user ||--|{ like
 user ||--|{ view
+user ||--|| session
 
 post ||--|| statistic
 post ||--o{ like
