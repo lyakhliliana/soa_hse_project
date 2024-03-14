@@ -1,0 +1,61 @@
+@startuml
+!define Table(name,desc) class name as "desc" << (T,white) >>
+!define primary_key(x) <color:blue>x</color>
+!define foreign_key(x) <color:green>x</color>
+
+Table(user, "User") {
+    +primary_key(id) : int
+    +username : varchar
+    +password : varchar
+    +age : int
+    +email : varchar
+}
+
+Table(post, "Post") {
+    +primary_key(id) : int
+    +foreign_key(user_id) : int
+    +content : varchar
+    +created_at : datetime
+}
+
+Table(comment, "Comment") {
+    +primary_key(id) : int
+    +foreign_key(user_id) : int
+    +foreign_key(post_id) : int
+    +related_to_comment : int
+    +comment_text : varchar
+    +created_at : datetime
+}
+
+Table(like, "Like") {
+    +primary_key(id) : int
+    +foreign_key(user_id) : int
+    +foreign_key(post_id) : int
+}
+
+Table(view, "View") {
+    +primary_key(id) : int
+    +foreign_key(user_id) : int
+    +foreign_key(post_id) : int
+}
+
+Table(statistic, "Statistic") {
+    +primary_key(id) : int
+    +foreign_key(post_id) : int
+    +likes : int
+    +views : int
+}
+
+user ||--|{ post
+user ||--|{ comment
+user ||--|{ like
+user ||--|{ view
+
+post ||--|| statistic
+post ||--o{ like
+post ||--o{ comment
+post ||--o{ view
+
+comment ||--o| comment
+
+@enduml
