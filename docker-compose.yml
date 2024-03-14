@@ -1,0 +1,38 @@
+version: '1'
+services:
+  pe-api:
+    build:
+      context: social_network_api
+      dockerfile: Dockerfile
+    volumes:
+      - ./common:/social_network_api/common
+    networks:
+      - social-network
+    ports:
+      - "30:30"
+    restart: unless-stopped
+    depends_on:
+    - postgresql
+
+  postgresql:
+    container_name: "postgresql"
+    image: postgres:15.5
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_MULTIPLE_DATABASES: social_network_api
+    ports:
+      - "5432:5432"
+    networks:
+      - social-network
+    volumes:
+      - ./tools/database-dev/configs/create-multiple-db-with-users.sh:/docker-entrypoint-initdb.d/create-multiple-db-with-users.sh:ro
+    healthcheck:
+      test: "pg_isready -U postgres"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  social-network:
+    name: "social-network"
