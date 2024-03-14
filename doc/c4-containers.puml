@@ -32,8 +32,8 @@ Rel(user, frontend, "Публикует/изменяет/удаляет пост
 Rel(frontend, gateway, "Отправляет на обработку действия пользователя", "REST")
 Rel(gateway, content, "Сохраняет/изменяет/удаляет посты, сохраняет комментарии", "gRPC")
 Rel(gateway, statistics, "Забирает статистику по лайкам и просмотрам", "gRPC")
-Rel(gateway, statistics_queue, "Отправляет действие по статистике в очередь", "AMQP")
-Rel(statistics, statistics_queue, "Забирает статистику", "AMQP")
+Rel(gateway, statistics_queue, "Отправляет действие по статистике в очередь")
+Rel(statistics, statistics_queue, "Забирает статистику")
 
 Rel(statistics, statistics_db, "", "")
 Rel(content, content_db, "", "")
