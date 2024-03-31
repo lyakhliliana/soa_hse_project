@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Date, UUID
+from sqlalchemy import Column, String, Date
+from sqlalchemy.dialects import postgresql
 
 from common.base_orm_model import BaseOrmModel
 
@@ -17,4 +18,4 @@ class UserDao(BaseOrmModel):
 class SessionDao(BaseOrmModel):
     __tablename__ = 'session'
     login = Column(String(20), primary_key=True, nullable=False)
-    key = Column(UUID, nullable=False)
+    key = Column(postgresql.UUID(as_uuid=True), nullable=False)

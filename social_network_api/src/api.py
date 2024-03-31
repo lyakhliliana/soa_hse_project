@@ -7,11 +7,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from social_network_api.src.models.dao import UserDao, SessionDao
 from social_network_api.src.models.dto import RegisterData, SessionKey, UserUpdate
 from social_network_api.src.utils.session_maker import get_session
+from social_network_api.src.routers.post import post_app
 
 app = FastAPI(title='Social Network API')
+app.include_router(post_app)
 
 
-@app.post('/user', summary="Create new user")
+@app.post('/user', summary='Создать нового пользователя')
 async def create_user(
         user_to_post: RegisterData,
         session: AsyncSession = Depends(get_session)
@@ -27,7 +29,7 @@ async def create_user(
     return Response(status_code=201, media_type='text/plain', content='Регистрация успешна!')
 
 
-@app.put('/user', summary="Update user info")
+@app.put('/user', summary='Обновление информации о пользователе')
 async def update_info(
         user_data: UserUpdate,
         session_key: SessionKey,
@@ -48,7 +50,6 @@ async def update_info(
         raise HTTPException(status_code=401, detail=f'Действие недоступно. {cur_session.key}, {session_key.key}')
 
     # обновление данных
-    # await session.execute(update(UserDao).where(UserDao.login == new_info_user.login).values(???))
     update_data = user_data.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(user, key, value)
@@ -56,7 +57,7 @@ async def update_info(
     return Response(status_code=200, media_type='text/plain', content='Данные обновлены.')
 
 
-@app.post('/user_authentication', response_model=SessionKey, summary="Аутентификация в системе по логину и паролю")
+@app.post('/user_authentication', response_model=SessionKey, summary='Аутентификация в системе по логину и паролю')
 async def authenticate_user(
         user_data: RegisterData,
         session: AsyncSession = Depends(get_session)

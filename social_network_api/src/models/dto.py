@@ -30,3 +30,37 @@ class UserUpdate(BaseModel):
     birthdate: Optional[date] = None
     mail: Optional[str] = None
     number_phone: Optional[str] = None
+
+
+class PostCreate(BaseModel):
+    user_login: str
+    content: str
+
+
+class PostUpdate(PostCreate):
+    id: UUID
+
+
+class PostDelete(BaseModel):
+    id: UUID
+    user_login: str
+
+
+class PostGet(BaseModel):
+    id: UUID
+    user_login: str
+
+
+class PostsGet(BaseModel):
+    id: UUID
+    user_login: str
+    user_with_posts_login: str
+
+
+class PostCreate(BaseModel):
+    content: str
+
+
+class PostUpdate(BaseModel):
+    id: int
+    content: str
