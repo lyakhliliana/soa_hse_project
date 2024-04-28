@@ -21,7 +21,8 @@ class ContentService(ContentServicer):
         async with async_session() as session:
             async with session.begin():
                 session: AsyncSession = session
-                new_post: PostDao = PostDao(user_login=request.user_login, content=request.content, created_at=datetime.now())
+                new_post: PostDao = PostDao(user_login=request.user_login, content=request.content,
+                                            created_at=datetime.now())
                 session.add(new_post)
                 await session.commit()
                 return ChangePostReply(id=new_post.id)

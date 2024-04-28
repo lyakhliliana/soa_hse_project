@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <changeSet author="l.lyakh" id="create-view-table">
+        <createTable tableName="view" remarks="Таблица с просмотрами постов">
+
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="view_id"/>
+            </column>
+
+            <column name="login" type="VARCHAR" remarks="Логин пользователя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="post_id" type="INTEGER" remarks="Идентификатор поста">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
