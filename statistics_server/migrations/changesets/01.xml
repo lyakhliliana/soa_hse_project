@@ -9,7 +9,7 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
     <changeSet author="l.lyakh" id="create-like-table">
-        <createTable tableName="like" remarks="Таблица с лайками">
+        <createTable tableName="likes" remarks="Таблица с лайками">
             <column autoIncrement="true" name="id" type="INTEGER">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="like_id"/>
             </column>
@@ -19,6 +19,10 @@
             </column>
 
             <column name="post_id" type="INTEGER" remarks="Идентификатор поста">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="INTEGER" remarks="Идентификатор пользователя">
                 <constraints nullable="false"/>
             </column>
 

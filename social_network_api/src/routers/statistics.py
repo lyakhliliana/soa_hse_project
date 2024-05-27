@@ -32,7 +32,7 @@ async def like_post(
 ):
     topic = os.getenv('TOPIC_NAME_LIKES')
     async with kafka_producer_likes.session() as session:
-        await send_message(session, topic, {'post_id': post_id, 'login': user.login})
+        await send_message(session, topic, {'post_id': post_id, 'login': user.login, 'user_id': user.id})
     return Response(status_code=201, media_type='text/plain', content='Лайк поставлен.')
 
 
@@ -43,5 +43,5 @@ async def view_post(
 ):
     topic = os.getenv('TOPIC_NAME_VIEWS')
     async with kafka_producer_views.session() as session:
-        await send_message(session, topic, {'post_id': post_id, 'login': user.login})
+        await send_message(session, topic, {'post_id': post_id, 'login': user.login, 'user_id': user.id})
     return Response(status_code=201, media_type='text/plain', content='Просмотр отмечен.')
