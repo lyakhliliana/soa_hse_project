@@ -1,16 +1,26 @@
+import asyncio
+import logging
 import os
-from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Response
+import grpc
 
-
+from common.stat_grpc.statistics_pb2_grpc import add_StatisticsServicer_to_server
+from statistics_server.src.grpc_service import StatisticsService
 from statistics_server.src.kafka.callback_functions import likes_callback, views_callback
 from statistics_server.src.kafka.entities import kafka_consumer_likes, kafka_consumer_views, event_loop
-from statistics_server.src.models.dto import LikeDto
 
 
-@asynccontextmanager
-async def lifespan(_app: FastAPI):
+async def serve() -> None:
+    server = grpc.aio.server()
+    add_StatisticsServicer_to_server(StatisticsService(), server)
+    listen_addr = '0.0.0.0:50052'
+    server.add_insecure_port(listen_addr)
+    logging.info('Starting server on %s', listen_addr)
+    await server.start()
+    await server.wait_for_termination()
+
+
+async def lifespan():
     topic = os.getenv('TOPIC_NAME_LIKES')
     await kafka_consumer_likes.init_consumer(topic, likes_callback)
     event_loop.create_task(kafka_consumer_likes.consume())
@@ -19,15 +29,13 @@ async def lifespan(_app: FastAPI):
     await kafka_consumer_views.init_consumer(topic, views_callback)
     event_loop.create_task(kafka_consumer_views.consume())
 
-    yield
-    await kafka_consumer_likes.stop()
-    await kafka_consumer_views.stop()
+    try:
+        await serve()
+    finally:
+        await kafka_consumer_likes.stop()
+        await kafka_consumer_views.stop()
 
 
-app = FastAPI(title='Statistic API', lifespan=lifespan)
-
-
-@app.post('/joke',
-          summary='Method with response 200.')
-async def score_agreement(_: LikeDto):
-    return Response(status_code=200, media_type='text/plain', content='Stub')
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    asyncio.run(lifespan())

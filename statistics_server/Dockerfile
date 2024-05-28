@@ -6,6 +6,8 @@ COPY .  statistics_server
 
 RUN pip install --no-cache-dir --upgrade -r statistics_server/requirements.txt
 
-EXPOSE 8040
+ENV PYTHONPATH /statistics_server
 
-CMD ["uvicorn", "statistics_server.src.api:app", "--host", "0.0.0.0", "--port", "8040"]
+EXPOSE 50052
+
+CMD [ "python", "statistics_server/src/api.py" ]
