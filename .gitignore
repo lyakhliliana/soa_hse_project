@@ -1,2 +1,7 @@
 .idea/
+.venv/
+venv/
 common/post_grpc/__pycache__/
+common/__pycache__/
+common/kafka_managers/__pycache__/
+common/stat_grpc/__pycache__/

@@ -1,0 +1,6 @@
+networks:
+  social-network:
+    name: "social-network"
+
+include:
+  - docker-compose.yml

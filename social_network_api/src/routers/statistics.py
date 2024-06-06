@@ -13,7 +13,7 @@ from social_network_api.src.models.dao import SessionDao, UserDao
 from social_network_api.src.utils.session_maker import get_session
 
 statistics_app = APIRouter(prefix="")
-HOST_GRPC = os.getenv('HOST_GRPC', '192.168.1.65')
+HOST_GRPC = os.getenv('HOST_GRPC')
 post_grpc_client = ContentGRPCClient(host=HOST_GRPC)
 statistics_grpc_client = StatisticsGRPCClient(host=HOST_GRPC)
 
@@ -73,7 +73,7 @@ async def get_post_stat(post_id: int):
 
 @statistics_app.get('/top_posts', summary='Получить топ-5 постов по флагу view/like')
 async def get_top_posts(flag: str):
-    if flag not in ("view", "like"):
+    if flag not in ('view', 'like'):
         raise HTTPException(status_code=400, detail='Flag is like or view')
     response = (await statistics_grpc_client.get_top_posts(flag=flag))
     if not response:
