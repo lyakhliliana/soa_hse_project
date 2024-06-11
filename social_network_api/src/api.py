@@ -25,8 +25,6 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(title='Social Network API', lifespan=lifespan)
 app.include_router(post_app)
 app.include_router(statistics_app)
-
-
 @app.post('/user', summary='Создать нового пользователя')
 async def create_user(
     user_to_post: RegisterData,
