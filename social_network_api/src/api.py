@@ -1,22 +1,34 @@
 import uuid
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException, Response
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from social_network_api.src.kafka.entities import kafka_producer_likes, kafka_producer_views
 from social_network_api.src.models.dao import UserDao, SessionDao
 from social_network_api.src.models.dto import RegisterData, SessionKey, UserUpdate
+from social_network_api.src.routers.statistics import statistics_app
 from social_network_api.src.utils.session_maker import get_session
 from social_network_api.src.routers.post import post_app
 
-app = FastAPI(title='Social Network API')
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    await kafka_producer_likes.init_producer()
+    await kafka_producer_views.init_producer()
+    yield
+    await kafka_producer_likes.stop()
+    await kafka_producer_views.stop()
+
+
+app = FastAPI(title='Social Network API', lifespan=lifespan)
 app.include_router(post_app)
-
-
+app.include_router(statistics_app)
 @app.post('/user', summary='Создать нового пользователя')
 async def create_user(
-        user_to_post: RegisterData,
-        session: AsyncSession = Depends(get_session)
+    user_to_post: RegisterData,
+    session: AsyncSession = Depends(get_session)
 ) -> Response:
     user: UserDao = (await session.execute(
         select(UserDao).where(UserDao.login == user_to_post.login))).unique().scalars().one_or_none()
@@ -31,9 +43,9 @@ async def create_user(
 
 @app.put('/user', summary='Обновление информации о пользователе')
 async def update_info(
-        user_data: UserUpdate,
-        session_key: SessionKey,
-        session: AsyncSession = Depends(get_session)
+    user_data: UserUpdate,
+    session_key: SessionKey,
+    session: AsyncSession = Depends(get_session)
 ):
     # проверка существования пользователя
     user: UserDao = (
@@ -59,8 +71,8 @@ async def update_info(
 
 @app.post('/user_authentication', response_model=SessionKey, summary='Аутентификация в системе по логину и паролю')
 async def authenticate_user(
-        user_data: RegisterData,
-        session: AsyncSession = Depends(get_session)
+    user_data: RegisterData,
+    session: AsyncSession = Depends(get_session)
 ) -> SessionKey:
     # проверка логина и пароля на соответствие
     user: UserDao = (

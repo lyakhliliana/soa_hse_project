@@ -26,7 +26,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema: { }
         '422':
           description: Validation Error
           content:
@@ -55,7 +55,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema: { }
         '422':
           description: Validation Error
           content:
@@ -85,7 +85,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema: { }
         '422':
           description: Validation Error
           content:
@@ -102,19 +102,12 @@ paths:
           schema:
             type: integer
             title: Post Id
-        - name: session-key
-          in: header
-          required: true
-          schema:
-            type: string
-            format: uuid
-            title: Session-Key
       responses:
         '200':
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema: { }
         '422':
           description: Validation Error
           content:
@@ -132,6 +125,29 @@ paths:
           schema:
             type: string
             title: User Login
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: { }
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /like:
+    post:
+      summary: Поставить лайк посту
+      operationId: like_post_like_post
+      parameters:
+        - name: post_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            title: Post Id
         - name: session-key
           in: header
           required: true
@@ -144,7 +160,37 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema: { }
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /view:
+    post:
+      summary: Просмотреть пост
+      operationId: view_post_view_post
+      parameters:
+        - name: post_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            title: Post Id
+        - name: session-key
+          in: header
+          required: true
+          schema:
+            type: string
+            format: uuid
+            title: Session-Key
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: { }
         '422':
           description: Validation Error
           content:
@@ -166,7 +212,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema: { }
         '422':
           description: Validation Error
           content:
@@ -187,7 +233,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema: {}
+              schema: { }
         '422':
           description: Validation Error
           content:

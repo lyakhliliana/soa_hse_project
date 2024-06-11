@@ -29,8 +29,8 @@ async def check_session_key(session: AsyncSession = Depends(get_session), sessio
 
 @post_app.post('', summary='Создание поста')
 async def create_post(
-        post_to_post: PostCreate,
-        user: UserDao = Depends(check_session_key)
+    post_to_post: PostCreate,
+    user: UserDao = Depends(check_session_key)
 ):
     response = (await post_grpc_client.create_post(user_login=user.login, content=post_to_post.content))
     if not response:
@@ -40,8 +40,8 @@ async def create_post(
 
 @post_app.put('', summary='Обновление контента поста')
 async def update_post(
-        post_to_update: PostUpdate,
-        user: UserDao = Depends(check_session_key)
+    post_to_update: PostUpdate,
+    user: UserDao = Depends(check_session_key)
 ):
     response = (await post_grpc_client.update_post(
         user_login=user.login,
@@ -55,8 +55,8 @@ async def update_post(
 
 @post_app.delete('/{post_id}', summary='Удаление поста')
 async def delete_post(
-        post_id: int,
-        user: UserDao = Depends(check_session_key)
+    post_id: int,
+    user: UserDao = Depends(check_session_key)
 ):
     response = (await post_grpc_client.delete_post(post_id=post_id, user_login=user.login))
     if not response:
@@ -65,10 +65,7 @@ async def delete_post(
 
 
 @post_app.get('/{post_id}', summary='Получить пост')
-async def get_post(
-        post_id: int,
-        _: UserDao = Depends(check_session_key)
-):
+async def get_post(post_id: int):
     response = (await post_grpc_client.get_post(post_id=post_id))
     if not response:
         raise HTTPException(status_code=401, detail='GRPC client error')
@@ -76,10 +73,7 @@ async def get_post(
 
 
 @post_app.get('s/{user_login}', summary='Получить все посты по конкретному логину')
-async def get_posts(
-        user_login: str,
-        _: UserDao = Depends(check_session_key)
-):
+async def get_posts(user_login: str):
     response = (await post_grpc_client.get_posts(user_login=user_login))
     if not response:
         raise HTTPException(status_code=401, detail='GRPC client error')

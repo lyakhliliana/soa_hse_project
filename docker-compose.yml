@@ -1,9 +1,16 @@
-version: '1'
+networks:
+  social-network:
+    name: "social-network"
+include:
+  - tools/kafka-dev/docker-compose.yml
+
 services:
   social-network-api:
     build:
       context: social_network_api
       dockerfile: Dockerfile
+    env_file:
+      - config.env
     environment:
       HOST_GRPC: 172.29.176.1
     volumes:
@@ -15,6 +22,7 @@ services:
     restart: unless-stopped
     depends_on:
       - postgresql
+      - init-kafka
 
   content-service:
     build:
@@ -29,6 +37,25 @@ services:
     restart: unless-stopped
     depends_on:
       - postgresql
+      - init-kafka
+
+  statistics-server:
+    build:
+      context: statistics_server
+      dockerfile: Dockerfile
+    env_file:
+      - config.env
+    volumes:
+      - ./common/:/statistics_server/common/
+    networks:
+      - social-network
+    ports:
+      - "8040:8040"
+    restart: unless-stopped
+    depends_on:
+      - postgresql
+      - init-kafka
+
   postgresql:
     container_name: "postgresql"
     image: postgres:15.5
@@ -36,7 +63,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_INITDB_ARGS: --auth=scram-sha-256
-      POSTGRES_MULTIPLE_DATABASES: social_network_api, content_api
+      POSTGRES_MULTIPLE_DATABASES: social_network_api, content_api, statistics_server
     ports:
       - "5432:5432"
     networks:
@@ -48,6 +75,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  pgadmin:
+    container_name: "pgadmin"
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    entrypoint: >
+      /bin/sh -c "
+      cp -f /pgadmin4/pgpass /var/lib/pgadmin/;
+      chmod 600 /var/lib/pgadmin/pgpass;
+      /entrypoint.sh
+      "
+    env_file:
+      - config.env
+    ports:
+      - "8080:80"
+    networks:
+      - social-network
+    volumes:
+      - ./tools/database-dev/configs/servers.json:/pgadmin4/servers.json:ro
+      - ./tools/database-dev/configs/pgpass:/pgadmin4/pgpass:ro
 
   liquibase-content-service-grpc:
     image: liquibase/liquibase:4.19
@@ -69,6 +116,12 @@ services:
     depends_on:
       - postgresql
 
-networks:
-  social-network:
-    name: "social-network"
+  liquibase-statistics_server-api:
+    image: liquibase/liquibase:4.19
+    networks:
+      - social-network
+    volumes:
+      - ./statistics_server/migrations:/app
+    command: [ "--defaultsFile=/app/dev.properties", "update" ]
+    depends_on:
+      - postgresql
