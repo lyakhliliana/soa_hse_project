@@ -8,6 +8,7 @@ from statistics_server.src.models.dto import LikeDto, ViewDto
 from statistics_server.src.utils.session_maker import async_session
 
 
+
 async def likes_callback(msg):
     request_info = LikeDto(**json.loads(msg.value.decode('ascii')))
     async with async_session() as session:
@@ -21,6 +22,7 @@ async def likes_callback(msg):
                                         user_id=request_info.user_id, author_login=request_info.author_login)
             session.add(new_like)
             await session.commit()
+
 
 
 async def views_callback(msg):
