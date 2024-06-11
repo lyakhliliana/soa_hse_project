@@ -29,7 +29,6 @@ services:
     restart: unless-stopped
     depends_on:
       - postgresql
-
   postgresql:
     container_name: "postgresql"
     image: postgres:15.5
