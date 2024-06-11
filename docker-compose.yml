@@ -1,26 +1,42 @@
 version: '1'
 services:
-  pe-api:
+  social-network-api:
     build:
       context: social_network_api
       dockerfile: Dockerfile
+    environment:
+      HOST_GRPC: 172.29.176.1
     volumes:
-      - ./common:/social_network_api/common
+      - ./common/:/social_network_api/common/
     networks:
       - social-network
     ports:
       - "30:30"
     restart: unless-stopped
     depends_on:
-    - postgresql
+      - postgresql
 
+  content-service:
+    build:
+      context: content_service
+      dockerfile: Dockerfile
+    volumes:
+      - ./common/:/content_service/common/
+    networks:
+      - social-network
+    ports:
+      - "50051:50051"
+    restart: unless-stopped
+    depends_on:
+      - postgresql
   postgresql:
     container_name: "postgresql"
     image: postgres:15.5
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: postgres
-      POSTGRES_MULTIPLE_DATABASES: social_network_api
+      POSTGRES_INITDB_ARGS: --auth=scram-sha-256
+      POSTGRES_MULTIPLE_DATABASES: social_network_api, content_api
     ports:
       - "5432:5432"
     networks:
@@ -32,6 +48,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  liquibase-content-service-grpc:
+    image: liquibase/liquibase:4.19
+    networks:
+      - social-network
+    volumes:
+      - ./content_service/migrations:/app
+    command: [ "--defaultsFile=/app/dev.properties", "update" ]
+    depends_on:
+      - postgresql
+
+  liquibase-social-network-api:
+    image: liquibase/liquibase:4.19
+    networks:
+      - social-network
+    volumes:
+      - ./social_network_api/migrations:/app
+    command: [ "--defaultsFile=/app/dev.properties", "update" ]
+    depends_on:
+      - postgresql
 
 networks:
   social-network:

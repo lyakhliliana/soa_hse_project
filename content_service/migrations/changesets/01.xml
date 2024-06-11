@@ -8,15 +8,24 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-    <changeSet author="l.lyakh" id="create-session-table">
-        <createTable tableName="session" remarks="Таблица с сессиями пользователей">
-            <column name="login" type="VARCHAR">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="user_login_session"/>
+    <changeSet author="l.lyakh" id="create-post-table">
+        <createTable tableName="post" remarks="Таблица с постами пользовтаелей">
+            <column autoIncrement="true" name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="post_id"/>
             </column>
 
-            <column name="key" type="UUID" remarks="Идентификационный номер">
+            <column name="content" type="VARCHAR" remarks="Содержание поста">
                 <constraints nullable="false"/>
             </column>
+
+            <column name="created_at" type="DATETIME" remarks="Время создания поста">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_login" type="VARCHAR" remarks="Логин пользователя">
+                <constraints nullable="false"/>
+            </column>
+
         </createTable>
     </changeSet>
 

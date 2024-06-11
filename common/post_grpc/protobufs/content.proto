@@ -1,0 +1,44 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+service Content {
+    rpc CreatePost (CreatePostRequest) returns (ChangePostReply) {}
+    rpc UpdatePost (UpdatePostRequest) returns (ChangePostReply) {}
+    rpc DeletePost (DeletePostRequest) returns (ChangePostReply) {}
+    rpc GetPost (GetPostRequest) returns (GetPostReply) {}
+    rpc GetPosts (GetPostsRequest) returns (stream GetPostReply) {}
+
+}
+
+message CreatePostRequest {
+    string user_login = 1;
+    string content = 2;
+}
+
+message ChangePostReply {
+    int64 id = 1;
+}
+
+message UpdatePostRequest {
+    int64 id = 1;
+    string user_login = 2;
+    string content = 3;
+}
+
+message DeletePostRequest {
+    int64 id = 1;
+    string user_login = 2;
+}
+
+message GetPostRequest {
+    int64 id = 1;
+}
+
+message GetPostReply {
+    int64 id = 1;
+    string user_login = 2;
+    string content = 3;
+}
+
+message GetPostsRequest {
+    string user_login = 1;
+}
