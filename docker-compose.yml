@@ -50,7 +50,7 @@ services:
     networks:
       - social-network
     ports:
-      - "8040:8040"
+      - "50052:50052"
     restart: unless-stopped
     depends_on:
       - postgresql

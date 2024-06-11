@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Date
+from sqlalchemy import Column, String, Date, Integer
 from sqlalchemy.dialects import postgresql
 
 from common.base_orm_model import BaseOrmModel
@@ -6,7 +6,8 @@ from common.base_orm_model import BaseOrmModel
 
 class UserDao(BaseOrmModel):
     __tablename__ = 'user'
-    login = Column(String(20), primary_key=True, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
+    login = Column(String(20),nullable=False)
     password = Column(String(20), nullable=False)
     name = Column(String(30), nullable=True)
     surname = Column(String(30), nullable=True)
