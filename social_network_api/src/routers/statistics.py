@@ -78,7 +78,7 @@ async def get_top_posts(flag: str):
     response = (await statistics_grpc_client.get_top_posts(flag=flag))
     if not response:
         raise HTTPException(status_code=401, detail='GRPC client error')
-    return [{'post_id': post.post_id, 'views': post.views, 'likes': post.likes, 'login': post.login} for post in
+    return [{'post_id': post.post_id, 'amount': post.amount, 'login': post.login} for post in
             response]
 
 
