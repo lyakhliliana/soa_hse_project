@@ -19,7 +19,15 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="author_login" type="VARCHAR" remarks="Логин автора">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="post_id" type="INTEGER" remarks="Идентификатор поста">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="INTEGER" remarks="Идентификатор пользователя">
                 <constraints nullable="false"/>
             </column>
 

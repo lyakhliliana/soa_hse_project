@@ -11,7 +11,7 @@ from social_network_api.src.grpc_client.post.post_client_api import ContentGRPCC
 from uuid import UUID
 
 post_app = APIRouter(prefix="/post")
-HOST_GRPC = os.getenv('HOST_GRPC', '192.168.1.65')
+HOST_GRPC = os.getenv('HOST_GRPC')
 post_grpc_client = ContentGRPCClient(host=HOST_GRPC)
 
 
