@@ -1,10 +1,11 @@
 from pathlib import Path
+from uuid import UUID
 
 import httpx
 import pytest
-from uuid import UUID
-
 from testcontainers.compose import DockerCompose
+
+host = '0.0.0.0'
 
 
 @pytest.fixture(scope='module')
@@ -16,7 +17,6 @@ def docker_services():
 
 @pytest.mark.asyncio
 async def test_create_and_auth_user(docker_services):
-    host = 'localhost'
     async with httpx.AsyncClient() as client:
         data = {
             'login': 'login',
@@ -34,7 +34,6 @@ async def test_create_and_auth_user(docker_services):
 
 @pytest.mark.asyncio
 async def test_create_post_and_like(docker_services):
-    host = 'localhost'
     async with httpx.AsyncClient() as client:
         data = {
             'login': 'login',
