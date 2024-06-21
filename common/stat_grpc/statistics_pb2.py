@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotobufs/statistics.proto\"+\n\x18GetStatisticsByIdRequest\x12\x0f\n\x07post_id\x18\x01 \x01(\x03\"G\n\x16GetStatisticsByIdReply\x12\x0f\n\x07post_id\x18\x01 \x01(\x03\x12\r\n\x05likes\x18\x02 \x01(\x03\x12\r\n\x05views\x18\x03 \x01(\x03\"\"\n\x12GetTopPostsRequest\x12\x0c\n\x04\x66lag\x18\x01 \x01(\t\";\n\tPostReply\x12\x0f\n\x07post_id\x18\x01 \x01(\x03\x12\r\n\x05login\x18\x02 \x01(\t\x12\x0e\n\x06\x61mount\x18\x03 \x01(\x03\"4\n\x10GetTopPostsReply\x12 \n\x0cpost_replies\x18\x01 \x03(\x0b\x32\n.PostReply\"\x0e\n\x0c\x45mptyRequest\")\n\tUserReply\x12\r\n\x05login\x18\x01 \x01(\t\x12\r\n\x05likes\x18\x02 \x01(\x03\"4\n\x10GetTopUsersReply\x12 \n\x0cuser_replies\x18\x01 \x03(\x0b\x32\n.UserReply2\xc3\x01\n\nStatistics\x12I\n\x11GetStatisticsById\x12\x19.GetStatisticsByIdRequest\x1a\x17.GetStatisticsByIdReply\"\x00\x12\x37\n\x0bGetTopPosts\x12\x13.GetTopPostsRequest\x1a\x11.GetTopPostsReply\"\x00\x12\x31\n\x0bGetTopUsers\x12\r.EmptyRequest\x1a\x11.GetTopUsersReply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1aprotobufs/statistics.proto\"+\n\x18GetStatisticsByIdRequest\x12\x0f\n\x07post_id\x18\x01 \x01(\x03\"G\n\x16GetStatisticsByIdReply\x12\x0f\n\x07post_id\x18\x01 \x01(\x03\x12\r\n\x05likes\x18\x02 \x01(\x03\x12\r\n\x05views\x18\x03 \x01(\x03\"\"\n\x12GetTopPostsRequest\x12\x0c\n\x04\x66lag\x18\x01 \x01(\t\";\n\tPostReply\x12\x0f\n\x07post_id\x18\x01 \x01(\x03\x12\r\n\x05login\x18\x02 \x01(\t\x12\x0e\n\x06\x61mount\x18\x03 \x01(\x03\"\x0e\n\x0c\x45mptyRequest\")\n\tUserReply\x12\r\n\x05login\x18\x01 \x01(\t\x12\r\n\x05likes\x18\x02 \x01(\x03\x32\xb9\x01\n\nStatistics\x12I\n\x11GetStatisticsById\x12\x19.GetStatisticsByIdRequest\x1a\x17.GetStatisticsByIdReply\"\x00\x12\x32\n\x0bGetTopPosts\x12\x13.GetTopPostsRequest\x1a\n.PostReply\"\x00\x30\x01\x12,\n\x0bGetTopUsers\x12\r.EmptyRequest\x1a\n.UserReply\"\x00\x30\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -29,14 +29,10 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_GETTOPPOSTSREQUEST']._serialized_end=182
   _globals['_POSTREPLY']._serialized_start=184
   _globals['_POSTREPLY']._serialized_end=243
-  _globals['_GETTOPPOSTSREPLY']._serialized_start=245
-  _globals['_GETTOPPOSTSREPLY']._serialized_end=297
-  _globals['_EMPTYREQUEST']._serialized_start=299
-  _globals['_EMPTYREQUEST']._serialized_end=313
-  _globals['_USERREPLY']._serialized_start=315
-  _globals['_USERREPLY']._serialized_end=356
-  _globals['_GETTOPUSERSREPLY']._serialized_start=358
-  _globals['_GETTOPUSERSREPLY']._serialized_end=410
-  _globals['_STATISTICS']._serialized_start=413
-  _globals['_STATISTICS']._serialized_end=608
+  _globals['_EMPTYREQUEST']._serialized_start=245
+  _globals['_EMPTYREQUEST']._serialized_end=259
+  _globals['_USERREPLY']._serialized_start=261
+  _globals['_USERREPLY']._serialized_end=302
+  _globals['_STATISTICS']._serialized_start=305
+  _globals['_STATISTICS']._serialized_end=490
 # @@protoc_insertion_point(module_scope)

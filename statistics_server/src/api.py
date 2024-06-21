@@ -7,7 +7,7 @@ import grpc
 from common.stat_grpc.statistics_pb2_grpc import add_StatisticsServicer_to_server
 from statistics_server.src.grpc_service import StatisticsService
 from statistics_server.src.kafka.callback_functions import likes_callback, views_callback
-from statistics_server.src.kafka.entities import kafka_consumer_likes, kafka_consumer_views, event_loop
+from statistics_server.src.kafka.entities import kafka_consumer_likes, kafka_consumer_views
 
 
 async def serve() -> None:
@@ -23,11 +23,11 @@ async def serve() -> None:
 async def lifespan():
     topic = os.getenv('TOPIC_NAME_LIKES')
     await kafka_consumer_likes.init_consumer(topic, likes_callback)
-    event_loop.create_task(kafka_consumer_likes.consume())
+    asyncio.create_task(kafka_consumer_likes.consume())
 
     topic = os.getenv('TOPIC_NAME_VIEWS')
     await kafka_consumer_views.init_consumer(topic, views_callback)
-    event_loop.create_task(kafka_consumer_views.consume())
+    asyncio.create_task(kafka_consumer_views.consume())
 
     try:
         await serve()

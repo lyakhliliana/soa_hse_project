@@ -2,8 +2,8 @@ syntax = "proto3";
 
 service Statistics {
     rpc GetStatisticsById (GetStatisticsByIdRequest) returns (GetStatisticsByIdReply) {}
-    rpc GetTopPosts (GetTopPostsRequest) returns (GetTopPostsReply) {}
-    rpc GetTopUsers (EmptyRequest) returns (GetTopUsersReply) {}
+    rpc GetTopPosts (GetTopPostsRequest) returns (stream PostReply) {}
+    rpc GetTopUsers (EmptyRequest) returns (stream UserReply) {}
 }
 
 message GetStatisticsByIdRequest {
@@ -26,18 +26,10 @@ message PostReply {
     int64 amount = 3;
 }
 
-message GetTopPostsReply {
-    repeated PostReply post_replies = 1;
-}
-
 message EmptyRequest {
 }
 
 message UserReply {
     string login = 1;
     int64 likes = 2;
-}
-
-message GetTopUsersReply {
-    repeated UserReply user_replies = 1;
 }

@@ -1,7 +1,6 @@
-from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import ClassVar as _ClassVar, Optional as _Optional
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -37,12 +36,6 @@ class PostReply(_message.Message):
     amount: int
     def __init__(self, post_id: _Optional[int] = ..., login: _Optional[str] = ..., amount: _Optional[int] = ...) -> None: ...
 
-class GetTopPostsReply(_message.Message):
-    __slots__ = ("post_replies",)
-    POST_REPLIES_FIELD_NUMBER: _ClassVar[int]
-    post_replies: _containers.RepeatedCompositeFieldContainer[PostReply]
-    def __init__(self, post_replies: _Optional[_Iterable[_Union[PostReply, _Mapping]]] = ...) -> None: ...
-
 class EmptyRequest(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
@@ -54,9 +47,3 @@ class UserReply(_message.Message):
     login: str
     likes: int
     def __init__(self, login: _Optional[str] = ..., likes: _Optional[int] = ...) -> None: ...
-
-class GetTopUsersReply(_message.Message):
-    __slots__ = ("user_replies",)
-    USER_REPLIES_FIELD_NUMBER: _ClassVar[int]
-    user_replies: _containers.RepeatedCompositeFieldContainer[UserReply]
-    def __init__(self, user_replies: _Optional[_Iterable[_Union[UserReply, _Mapping]]] = ...) -> None: ...
