@@ -31,7 +31,7 @@ def create_user():
                 'login': 'login',
                 'password': 'password'
             }
-            await client.post('http://0.0.0.0:30/user', json=data)
+            await client.post('http://localhost:30/user', json=data)
 
     return _impl
 

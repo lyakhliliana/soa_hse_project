@@ -25,7 +25,7 @@ def grpc_channel():
 
 @pytest.fixture(scope='module')
 def create_post():
-    host = '0.0.0.0'
+    host = 'localhost'
 
     async def _impl():
         async with httpx.AsyncClient() as client:

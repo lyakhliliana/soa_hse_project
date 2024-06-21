@@ -4,7 +4,7 @@ import httpx
 import pytest
 from testcontainers.compose import DockerCompose
 
-HOST = '0.0.0.0'
+HOST = 'localhost'
 
 
 @pytest.fixture(scope='module')
