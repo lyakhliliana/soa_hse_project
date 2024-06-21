@@ -4,6 +4,8 @@ import httpx
 import pytest
 from testcontainers.compose import DockerCompose
 
+HOST = 'localhost'
+
 
 @pytest.fixture(scope='module')
 def docker_services():
@@ -20,8 +22,8 @@ def create_user():
                 'login': 'login',
                 'password': 'password'
             }
-            await client.post('http://0.0.0.0:30/user', json=data)
-            response = (await client.post("http://0.0.0.0:30/user_authentication", json=data))
+            await client.post(f'http://{HOST}:30/user', json=data)
+            response = (await client.post(f'http://{HOST}:30/user_authentication', json=data))
             return response.json()['key']
 
     return _impl
@@ -38,10 +40,10 @@ async def test_create_post(docker_services, create_user):
             'content': 'some-content'
         }
         response = await client.post(
-            'http://0.0.0.0:30/post', json=data, headers=headers
+            f'http://{HOST}:30/post', json=data, headers=headers
         )
         assert response.json() == {'id': 1}
-        response = await client.get('http://0.0.0.0:30/post/1')
+        response = await client.get(f'http://{HOST}:30/post/1')
         assert response.status_code == 200
         assert response.json() == {'id': 1, 'content': 'some-content', 'user_login': 'login'}
 
@@ -49,6 +51,6 @@ async def test_create_post(docker_services, create_user):
 @pytest.mark.asyncio
 async def test_get_posts(docker_services):
     async with httpx.AsyncClient() as client:
-        response = await client.get('http://0.0.0.0:30/posts/login')
+        response = await client.get(f'http://{HOST}:30/posts/login')
         assert response.status_code == 200
         assert response.json() == [{'id': 1, 'content': 'some-content', 'user_login': 'login'}]

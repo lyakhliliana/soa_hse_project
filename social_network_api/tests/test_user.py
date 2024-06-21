@@ -4,8 +4,9 @@ import httpx
 import pytest
 from testcontainers.compose import DockerCompose
 
+HOST = 'localhost'
 
-# TODO: we should run only grpc server
+
 @pytest.fixture(scope='module')
 def docker_services():
     doker_compose_file = Path(__file__).parent.parent.parent
@@ -20,7 +21,7 @@ async def test_create_user(docker_services):
             'login': 'login',
             'password': 'password'
         }
-        response = await client.post("http://0.0.0.0:30/user", json=data)
+        response = await client.post(f'http://{HOST}:30/user', json=data)
         assert response.status_code == 201
         assert response.text == 'Регистрация успешна!'
 
@@ -32,6 +33,6 @@ async def test_create_user_and_auth(docker_services):
             'login': 'login',
             'password': 'password'
         }
-        await client.post("http://0.0.0.0:30/user", json=data)
-        response = await client.post("http://0.0.0.0:30/user_authentication", json=data)
+        await client.post(f'http://{HOST}:30/user', json=data)
+        response = await client.post(f'http://{HOST}:30/user_authentication', json=data)
         assert response.status_code == 200

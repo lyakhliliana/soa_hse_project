@@ -1,62 +1,62 @@
-# import asyncio
-# import os
-# from pathlib import Path
-#
-# import pytest
-# import pytest_asyncio
-# from testcontainers.compose import DockerCompose
-#
-# from common.kafka_managers.producer import KafkaProducerSession, send_message
-# from common.kafka_managers.consumer import KafkaConsumer
-#
-#
-# @pytest.fixture(scope='module')
-# def event_loop():
-#     loop = asyncio.get_event_loop()
-#     yield loop
-#     loop.close()
-#
-#
-# @pytest_asyncio.fixture(scope='module')
-# async def kafka_services():
-#     doker_compose_file = Path(__file__).parent.parent / 'tools' / 'kafka-dev'
-#     with DockerCompose(doker_compose_file, compose_file_name='docker-compose-test.yml') as docker_services:
-#         os.environ['KAFKA_INSTANCE'] = 'kafka:29092'
-#         await asyncio.sleep(20)
-#         yield docker_services
-#         os.environ.pop('KAFKA_INSTANCE')
-#
-#
-# def callback(msg):
-#     assert msg.value.decode('ascii') == {'post_id': 1, 'login': 'login', 'user_id': 1, 'author_login': 'login'}
-#
-#
-# @pytest_asyncio.fixture(scope='module')
-# async def kafka_producer(kafka_services):
-#     kafka = os.getenv('KAFKA_INSTANCE')
-#     config = {'bootstrap_servers': kafka}
-#     kafka_producer = KafkaProducerSession(config)
-#     await kafka_producer.init_producer()
-#     yield kafka_producer
-#     await kafka_producer.stop()
-#
-#
-# @pytest_asyncio.fixture(scope='module')
-# async def kafka_consumer(kafka_services):
-#     kafka = os.getenv('KAFKA_INSTANCE')
-#     config = {'bootstrap_servers': kafka}
-#     kafka_consumer = KafkaConsumer(config)
-#     await kafka_consumer.init_consumer('topic', callback)
-#     await kafka_consumer.consume()
-#     yield kafka_consumer
-#     await kafka_consumer.stop()
-#
-#
-# @pytest.mark.asyncio
-# async def test_kafka_produce_consume(kafka_producer, kafka_consumer):
-#     async with kafka_producer.session() as producer:
-#         await send_message(
-#             producer,
-#             'likes',
-#             {'post_id': 1, 'login': 'login', 'user_id': 1, 'author_login': 'login'}
-#         )
+import asyncio
+from pathlib import Path
+
+import pytest
+import pytest_asyncio
+from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
+from testcontainers.compose import DockerCompose
+
+
+@pytest_asyncio.fixture(scope='module')
+async def kafka_services():
+    doker_compose_file = Path(__file__).parent.parent / 'tools' / 'kafka-dev'
+    with DockerCompose(doker_compose_file, compose_file_name='docker-compose-test.yml') as docker_services:
+        await asyncio.sleep(10)
+        yield docker_services
+
+
+@pytest_asyncio.fixture(scope='module')
+async def extra_consumer(kafka_services):
+    bootstrap_servers = 'localhost:9092'
+    consumer = AIOKafkaConsumer(
+        'views',
+        bootstrap_servers=bootstrap_servers,
+        group_id='test_group',
+        value_deserializer=lambda v: v.decode('utf-8')
+    )
+    await consumer.start()
+    await consumer.stop()
+
+
+@pytest.mark.asyncio
+async def test_kafka_produce_consume(extra_consumer):
+    bootstrap_servers = 'localhost:9092'
+    producer = AIOKafkaProducer(
+        bootstrap_servers=bootstrap_servers,
+        value_serializer=lambda v: v.encode('utf-8')
+    )
+    await producer.start()
+
+    consumer = AIOKafkaConsumer(
+        'views',
+        bootstrap_servers=bootstrap_servers,
+        group_id='test_group',
+        value_deserializer=lambda v: v.decode('utf-8')
+    )
+    await consumer.start()
+
+    try:
+        await producer.send_and_wait('views', 'test_message')
+    finally:
+        await producer.stop()
+    await asyncio.sleep(5)
+
+    try:
+        messages = []
+        async for msg in consumer:
+            messages.append(msg.value)
+            if len(messages) >= 1:
+                break
+        assert messages == ['test_message']
+    finally:
+        await consumer.stop()

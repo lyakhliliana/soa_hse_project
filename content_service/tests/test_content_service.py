@@ -9,22 +9,6 @@ import common.post_grpc.content_pb2 as content_pb2
 import common.post_grpc.content_pb2_grpc as content_pb2_grpc
 
 
-# @pytest.fixture(scope='module')
-# def grpc_server():
-#     server_process = Process(target=serve)
-#     server_process.start()
-#     for _ in range(10):
-#         try:
-#             with grpc.insecure_channel('0.0.0.0:50052') as channel:
-#                 grpc.channel_ready_future(channel).result(timeout=1)
-#             break
-#         except grpc.FutureTimeoutError:
-#             time.sleep(1)
-#     yield
-#     server_process.terminate()
-#     server_process.join()
-
-# TODO: we should run only grpc server
 @pytest.fixture(scope='module')
 def docker_services():
     doker_compose_file = Path(__file__).parent.parent.parent
@@ -34,7 +18,7 @@ def docker_services():
 
 @pytest.fixture(scope='module')
 def grpc_channel():
-    channel = grpc.insecure_channel('0.0.0.0:50051')
+    channel = grpc.insecure_channel('localhost:50051')
     yield channel
     channel.close()
 
@@ -47,7 +31,7 @@ def create_user():
                 'login': 'login',
                 'password': 'password'
             }
-            await client.post('http://0.0.0.0:30/user', json=data)
+            await client.post('http://localhost:30/user', json=data)
 
     return _impl
 

@@ -16,16 +16,17 @@ def docker_services():
 
 @pytest.mark.asyncio
 async def test_create_and_auth_user(docker_services):
+    host = 'localhost'
     async with httpx.AsyncClient() as client:
         data = {
             'login': 'login',
             'password': 'password'
         }
-        response = await client.post("http://0.0.0.0:30/user", json=data)
+        response = await client.post(f'http://{host}:30/user', json=data)
         assert response.status_code == 201
         assert response.text == 'Регистрация успешна!'
 
-        response = await client.post("http://0.0.0.0:30/user_authentication", json=data)
+        response = await client.post(f'http://{host}:30/user_authentication', json=data)
         assert response.status_code == 200
         session: str = response.json()['key']
         assert isinstance(UUID(session), UUID)
@@ -33,13 +34,14 @@ async def test_create_and_auth_user(docker_services):
 
 @pytest.mark.asyncio
 async def test_create_post_and_like(docker_services):
+    host = 'localhost'
     async with httpx.AsyncClient() as client:
         data = {
             'login': 'login',
             'password': 'password'
         }
-        await client.post('http://0.0.0.0:30/user', json=data)
-        response = await client.post('http://0.0.0.0:30/user_authentication', json=data)
+        await client.post(f'http://{host}:30/user', json=data)
+        response = await client.post(f'http://{host}:30/user_authentication', json=data)
         session = response.json()['key']
         headers = {
             'session-key': session
@@ -48,9 +50,9 @@ async def test_create_post_and_like(docker_services):
             'content': 'some-content'
         }
         response = await client.post(
-            'http://0.0.0.0:30/post', json=data, headers=headers
+            f'http://{host}:30/post', json=data, headers=headers
         )
         assert response.json() == {'id': 1}
-        response = await client.get('http://0.0.0.0:30/post/1')
+        response = await client.get(f'http://{host}:30/post/1')
         assert response.status_code == 200
         assert response.json() == {'id': 1, 'content': 'some-content', 'user_login': 'login'}

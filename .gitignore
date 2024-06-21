@@ -5,3 +5,8 @@ common/post_grpc/__pycache__/
 common/__pycache__/
 common/kafka_managers/__pycache__/
 common/stat_grpc/__pycache__/
+content_service/tests/
+content_service/tests/__pycache__/
+social_network_api/tests/__pycache__/
+statistics_server/tests/__pycache__/
+tests/__pycache__/
