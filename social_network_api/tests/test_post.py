@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 import httpx
@@ -31,6 +32,7 @@ def create_user():
 
 @pytest.mark.asyncio
 async def test_create_post(docker_services, create_user):
+    await asyncio.sleep(5)
     session = (await create_user())
     async with httpx.AsyncClient() as client:
         headers = {
@@ -50,7 +52,10 @@ async def test_create_post(docker_services, create_user):
 
 @pytest.mark.asyncio
 async def test_get_posts(docker_services):
+    await asyncio.sleep(5)
     async with httpx.AsyncClient() as client:
         response = await client.get(f'http://{HOST}:30/posts/login')
         assert response.status_code == 200
         assert response.json() == [{'id': 1, 'content': 'some-content', 'user_login': 'login'}]
+    await asyncio.sleep(5)
+

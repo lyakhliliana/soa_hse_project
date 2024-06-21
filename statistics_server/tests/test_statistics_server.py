@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 import grpc
@@ -51,6 +52,7 @@ def create_post():
 
 @pytest.mark.asyncio
 async def test_get_post_by_id(docker_services, grpc_channel, create_post):
+    await asyncio.sleep(5)
     await create_post()
     stub = statistics_pb2_grpc.StatisticsStub(grpc_channel)
     request = statistics_pb2.GetStatisticsByIdRequest(post_id=1)
@@ -60,3 +62,4 @@ async def test_get_post_by_id(docker_services, grpc_channel, create_post):
            } == {
                'post_id': 1, 'views': 0, 'likes': 0
            }
+    await asyncio.sleep(5)

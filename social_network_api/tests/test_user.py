@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 import httpx
@@ -28,6 +29,7 @@ async def test_create_user(docker_services):
 
 @pytest.mark.asyncio
 async def test_create_user_and_auth(docker_services):
+    await asyncio.sleep(5)
     async with httpx.AsyncClient() as client:
         data = {
             'login': 'login',

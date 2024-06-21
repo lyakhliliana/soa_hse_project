@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 import grpc
@@ -38,8 +39,10 @@ def create_user():
 
 @pytest.mark.asyncio
 async def test_get_post_by_id(docker_services, grpc_channel, create_user):
+    await asyncio.sleep(5)
     await create_user()
     stub = content_pb2_grpc.ContentStub(grpc_channel)
     request = content_pb2.CreatePostRequest(user_login='login', content='some-content')
     response = stub.CreatePost(request)
     assert {'id': response.id} == {'id': 1}
+    await asyncio.sleep(5)

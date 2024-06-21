@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 from uuid import UUID
 
@@ -34,6 +35,7 @@ async def test_create_and_auth_user(docker_services):
 
 @pytest.mark.asyncio
 async def test_create_post_and_like(docker_services):
+    await asyncio.sleep(5)
     async with httpx.AsyncClient() as client:
         data = {
             'login': 'login',
@@ -55,3 +57,4 @@ async def test_create_post_and_like(docker_services):
         response = await client.get(f'http://{host}:30/post/1')
         assert response.status_code == 200
         assert response.json() == {'id': 1, 'content': 'some-content', 'user_login': 'login'}
+    await asyncio.sleep(5)

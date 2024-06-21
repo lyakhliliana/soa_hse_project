@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 import httpx
@@ -40,6 +41,7 @@ def create_user_and_post():
 
 @pytest.mark.asyncio
 async def test_get_stats_by_post_id(docker_services, create_user_and_post):
+    await asyncio.sleep(5)
     await create_user_and_post()
     async with httpx.AsyncClient() as client:
         response = await client.get(
@@ -47,11 +49,5 @@ async def test_get_stats_by_post_id(docker_services, create_user_and_post):
         )
         assert response.status_code == 200
         assert response.json() == {'post_id': 1, 'views': 0, 'likes': 0}
+    await asyncio.sleep(5)
 
-
-# @pytest.mark.asyncio
-# async def test_get_top_users(docker_services):
-#     async with httpx.AsyncClient() as client:
-#         response = await client.get(f'http://{HOST}:30/top_posts')
-#         assert response.status_code == 200
-#         assert response.json() == [{'post_id': 1, 'views': 0, 'likes': 0}]
