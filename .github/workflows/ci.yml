@@ -23,8 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt  # Убедитесь, что у вас есть файл requirements.txt с нужными зависимостями
-
+        pip install -r requirements.txt
     - name: Run tests
       run: |
         python -m pytest
